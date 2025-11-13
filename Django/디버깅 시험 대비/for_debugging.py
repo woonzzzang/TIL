@@ -35,3 +35,29 @@ auth_login(request, form.get_user())
 
 User = get_user_model()
 User = settings.AUTH_USER_MODEL # models.py 에서
+
+# 7. person의 차이점
+<h1> {{ person.username }}님의 프로필</h1>
+<h1> {{ request.user.username }}님의 프로필</h1>
+
+# 8. 로그인 한 사용자와 아닌 경우 분리
+{% if request.user.is_authenticated %}
+..
+{% else %}
+..
+{% endif %}
+
+# 9. 로그인 한 사용자가 쓴 글만 보이도록
+{% for article in articles %}
+    {% if request.user == article.user %}
+
+# 10. related name 정의 확인
+request.user in article.like_users.all
+article in request.user.like_articles.all
+
+# 11. symetrical True/False, 'self'의미
+followings = models.ManyToManyField(
+    'self', symmetrical=False, related_name='followers'
+)
+
+# 12. 역참조가 두 개 일 때 오류 수정: related_name
